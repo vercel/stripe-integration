@@ -1,0 +1,29 @@
+{
+  "name": "vercel-stripe-integration",
+  "version": "0.1.0",
+  "description": "Stripe integration for Vercel deploy.",
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "next": "latest",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "stripe": "8.126.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.1.2",
+    "@types/react": "^16.9.17",
+    "typescript": "^3.7.4"
+  },
+  "prettier": {
+    "arrowParens": "always",
+    "singleQuote": true,
+    "semi": false,
+    "tabWidth": 2,
+    "trailingComma": "none"
+  }
+}
