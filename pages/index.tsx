@@ -102,6 +102,17 @@ export default function IndexPage() {
             : 'Connect to Stripe'}
         </button>
         {stripeAccount ? (
+          <a
+            href="https://dashboard.stripe.com"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {`Open Stripe Dashboard →`}
+          </a>
+        ) : (
+          ''
+        )}
+        {stripeAccount ? (
           <>
             <button
               disabled={loading || stripeWebhookSet}
