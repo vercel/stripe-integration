@@ -1,3 +1,4 @@
+import { stringify } from 'querystring'
 import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import { fetchPostJSON } from '../utils/api-helpers'
@@ -6,7 +7,7 @@ export default function IndexPage() {
   const [stripeState, setStripeState] = useState('')
   const [stripeCode, setStripeCode] = useState('')
   const [stripeAccount, setStripeAccount] = useState('')
-  const [stripeWebhookSet, setStripeWebhookSet] = useState(false)
+  const [stripeWebhook, setStripeWebhook] = useState({ id: '', url: '' })
   const [code, setCode] = useState('')
   const [token, setToken] = useState('')
   const [teamId, setTeamId] = useState('')
@@ -75,13 +76,15 @@ export default function IndexPage() {
 
   const createWebhookEndpoint = async () => {
     setLoading(true)
-    await fetchPostJSON('/api/webhook', {
+    const {
+      webhook: { id, url }
+    } = await fetchPostJSON('/api/webhook', {
       project: projects[0],
       token,
       teamId,
       stripeAccount
     })
-    setStripeWebhookSet(true)
+    setStripeWebhook({ id, url })
     setLoading(false)
   }
 
@@ -101,7 +104,7 @@ export default function IndexPage() {
             ? 'Connected ✔'
             : 'Connect to Stripe'}
         </button>
-        {stripeAccount ? (
+        {stripeAccount && (
           <a
             href="https://dashboard.stripe.com"
             rel="noopener noreferrer"
@@ -109,21 +112,28 @@ export default function IndexPage() {
           >
             {`Open Stripe Dashboard →`}
           </a>
-        ) : (
-          ''
         )}
-        {stripeAccount ? (
+        {stripeAccount && (
           <>
             <button
-              disabled={loading || stripeWebhookSet}
+              disabled={loading || !!stripeWebhook.id}
               onClick={createWebhookEndpoint}
             >
               {loading
                 ? 'Loading...'
-                : stripeWebhookSet
+                : stripeWebhook.id
                 ? 'Webhook endpoint created ✔'
                 : 'Set up webhooks'}
             </button>
+            {stripeWebhook.id && (
+              <a
+                href={`https://dashboard.stripe.com/test/webhooks/${stripeWebhook.id}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {`Manage in Stripe Dashboard →`}
+              </a>
+            )}
             <button
               disabled={loading}
               onClick={() => {
@@ -133,8 +143,6 @@ export default function IndexPage() {
               {`Back to Vercel →`}
             </button>
           </>
-        ) : (
-          ''
         )}
       </div>
     </Layout>
