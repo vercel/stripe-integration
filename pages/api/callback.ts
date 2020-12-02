@@ -54,6 +54,16 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     token,
     teamId
   })
+  await setEnvVars({
+    type: 'plain',
+    key: 'URL',
+    value: `https://${projects[0].alias[0].domain}`,
+    target: ['production'],
+    method: 'POST',
+    projectId: projects[0].id,
+    token,
+    teamId
+  })
 
   res.json({
     token,
