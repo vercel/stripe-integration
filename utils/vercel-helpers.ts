@@ -113,6 +113,24 @@ const setEnvVars = async ({
     url,
     value
   })
+
+  if (type === 'secret') {
+    const res = await fetch(`https://api.vercel.com/v2/now/secrets`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: `${key}-${projectId}`,
+        value
+      })
+    }).then((res) => res.json())
+    console.log(`Created secret: ${res.uid}`)
+    if (!res.uid) new Error(res.error_description ?? 'Internal server error')
+    value = res.uid
+  }
+
   const res = await fetch(url, {
     method,
     headers: {

@@ -2,8 +2,6 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { setEnvVars } from '../../utils/vercel-helpers'
 import { stripe } from '../../utils/init-stripe'
 
-const targets = ['production', 'preview', 'development']
-
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const {
     body: { project, token, teamId, stripeAccount }
@@ -24,10 +22,20 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   )
 
   await setEnvVars({
-    type: 'plain', // TODO make secret
+    type: 'secret',
     key: 'STRIPE_WEBHOOK_SECRET',
     value: secret!,
-    target: targets,
+    target: ['production', 'preview'],
+    method: 'POST',
+    projectId: project.id,
+    token,
+    teamId
+  })
+  await setEnvVars({
+    type: 'plain', // Set secret as plain for development mode so you can do `vercel env pull`.
+    key: 'STRIPE_WEBHOOK_SECRET',
+    value: 'Run `stripe listen` to get secret!',
+    target: ['development'],
     method: 'POST',
     projectId: project.id,
     token,
