@@ -66,7 +66,6 @@ export default function IndexPage() {
         teamId,
         mode
       }
-      debugger
       const { token, projects, stripe } = await fetchPostJSON(
         `/api/callback`,
         params
@@ -102,7 +101,6 @@ export default function IndexPage() {
         <button
           disabled={loading || !!stripeAccount}
           onClick={() => {
-            debugger
             window.location.href = `/api/connect/${
               mode === 'live' ? 'live' : 'test'
             }?code=${code}&configurationId=${configurationId}`
