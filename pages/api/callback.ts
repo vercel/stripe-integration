@@ -29,7 +29,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   const token = await getAccessToken({
     code: code as string,
-    redirectUri: `${process.env.HOST}/${mode}`,
+    redirectUri: `${
+      process.env.HOST?.includes('http')
+        ? process.env.HOST
+        : 'https://' + process.env.HOST
+    }/${mode}`,
     livemode
   })
 
