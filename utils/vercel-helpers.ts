@@ -34,10 +34,12 @@ const stringify = (obj: any, sep: string = '&', eq: string = '=') => {
 
 const getAccessToken = async ({
   code,
-  redirectUri
+  redirectUri,
+  livemode
 }: {
   code: string
   redirectUri: string
+  livemode: boolean
 }) => {
   const res = await fetch('https://api.vercel.com/v2/oauth/access_token', {
     headers: {
@@ -45,8 +47,10 @@ const getAccessToken = async ({
     },
     method: 'POST',
     body: stringify({
-      client_id: process.env.CLIENT_ID,
-      client_secret: process.env.CLIENT_SECRET,
+      client_id: livemode ? process.env.CLIENT_ID_LIVE : process.env.CLIENT_ID,
+      client_secret: livemode
+        ? process.env.CLIENT_SECRET_LIVE
+        : process.env.CLIENT_SECRET,
       code,
       redirect_uri: redirectUri
     })

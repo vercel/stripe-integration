@@ -1,9 +1,12 @@
-import { stringify } from 'querystring'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Layout from '../components/Layout'
 import { fetchPostJSON } from '../utils/api-helpers'
 
 export default function IndexPage() {
+  const router = useRouter()
+  const { mode } = router.query
+
   const [stripeState, setStripeState] = useState('')
   const [stripeCode, setStripeCode] = useState('')
   const [stripeAccount, setStripeAccount] = useState('')
@@ -52,6 +55,7 @@ export default function IndexPage() {
     if (!stripeState) return
     if (!stripeCode) return
     if (!code) return
+    if (!mode) return
     if (token) return
     setLoading(true)
     const getAccessToken = async () => {
@@ -59,8 +63,10 @@ export default function IndexPage() {
         configurationId,
         code,
         stripeCode,
-        teamId
+        teamId,
+        mode
       }
+      debugger
       const { token, projects, stripe } = await fetchPostJSON(
         `/api/callback`,
         params
@@ -72,7 +78,7 @@ export default function IndexPage() {
       setLoading(false)
     }
     getAccessToken()
-  }, [code])
+  }, [code, mode])
 
   const createWebhookEndpoint = async () => {
     setLoading(true)
@@ -82,7 +88,8 @@ export default function IndexPage() {
       project: projects[0],
       token,
       teamId,
-      stripeAccount
+      stripeAccount,
+      mode
     })
     setStripeWebhook({ id, url })
     setLoading(false)
@@ -95,7 +102,10 @@ export default function IndexPage() {
         <button
           disabled={loading || !!stripeAccount}
           onClick={() => {
-            window.location.href = `/api/connect/test?code=${code}&configurationId=${configurationId}`
+            debugger
+            window.location.href = `/api/connect/${
+              mode === 'live' ? 'live' : 'test'
+            }?code=${code}&configurationId=${configurationId}`
           }}
         >
           {loading
