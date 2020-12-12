@@ -16,7 +16,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   const livemode = mode === 'live'
-  console.log('livemode ?', mode)
   const stripe = getStripe(livemode)
   const {
     stripe_publishable_key,
@@ -38,6 +37,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   })
 
   const projects = await getProjects({ token, teamId })
+  if (projects.length !== 1) {
+    console.log('Error: more than one project selected!')
+    return res.json({
+      projects: []
+    })
+  }
 
   // Set Stripe env vars
   await setEnvVars({

@@ -72,6 +72,10 @@ export default function IndexPage() {
       )
       console.debug('callback', { token, projects, stripe })
       setToken(token)
+      if (projects.length !== 1)
+        return alert(
+          'You can only install this integration for one project at a time!'
+        )
       setProjects(projects)
       setStripeAccount(stripe.stripe_user_id)
       setLoading(false)
