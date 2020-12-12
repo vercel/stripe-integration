@@ -126,7 +126,7 @@ const setEnvVars = async ({
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        name: `${key}-${projectId}`,
+        name: `${key}-${Number(Date.now() / 1000).toFixed(0)}`,
         value
       })
     }).then((res) => res.json())
