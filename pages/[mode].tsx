@@ -78,12 +78,30 @@ export default function IndexPage() {
         )
       setProjects(projects)
       setStripeAccount(stripe.stripe_user_id)
-      setLoading(false)
+      await createWebhookEndpoint({
+        projects,
+        token,
+        teamId,
+        stripeAccount: stripe.stripe_user_id,
+        mode
+      })
     }
     getAccessToken()
   }, [code, mode])
 
-  const createWebhookEndpoint = async () => {
+  const createWebhookEndpoint = async ({
+    projects,
+    token,
+    teamId,
+    stripeAccount,
+    mode
+  }: {
+    projects: Array<any>
+    token: string
+    teamId: string
+    stripeAccount: string
+    mode: string | string[]
+  }) => {
     setLoading(true)
     const {
       webhook: { id, url }
@@ -129,10 +147,10 @@ export default function IndexPage() {
           <>
             <button
               disabled={loading || !!stripeWebhook.id}
-              onClick={createWebhookEndpoint}
+              // onClick={createWebhookEndpoint}
             >
               {loading
-                ? 'Loading...'
+                ? 'Creating webhook endpoint...'
                 : stripeWebhook.id
                 ? 'Webhook endpoint created ✔'
                 : 'Set up webhooks'}
